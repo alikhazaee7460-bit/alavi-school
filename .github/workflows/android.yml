@@ -1,3 +1,4 @@
+
 name: Build Android APK
 
 on:
@@ -19,33 +20,21 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Add Android platform
-        run: npx cap add android
-
-      - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Setup Expo and EAS CLI
+        uses: expo/expo-github-action@v8
         with:
-          distribution: temurin
-          java-version: '21'
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Build Debug APK
-        working-directory: android
-        run: ./gradlew assembleDebug
+      - name: Build Android APK with EAS
+        run: eas build --platform android --profile preview --non-interactive --wait
 
-      - name: Find APK
-        run: |
-          echo "Searching for APK files..."
-          find android -type f -name "*.apk" -print
+      - name: Download generated APK
+        run: eas build:download --latest --platform android --path ./alavi-school.apk
 
-      - name: Upload Installable Debug APK
+      - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: alavi-islami-debug-apk
-          path: android/**/*.apk
+          name: alavi-school-android-apk
+          path: ./alavi-school.apk
           if-no-files-found: error
