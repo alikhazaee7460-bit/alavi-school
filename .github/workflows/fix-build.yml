@@ -1,0 +1,38 @@
+name: Fix and Build Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Fix Expo dependencies
+        run: npx expo install --fix
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add package.json package-lock.json
+          git commit -m "Fix: هماهنگ‌سازی نسخه کتابخانه‌ها با Expo SDK 58" || echo "No changes to commit"
+          git push
+
+      - name: Setup Expo and EAS CLI
+        run: npm install -g eas-cli
+
+      - name: Build Android APK
+        run: eas build --platform android --profile preview --non-interactive --wait
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
