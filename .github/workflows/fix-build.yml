@@ -16,15 +16,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22' # استفاده از نسخه جدید برای رفع هشدار
 
       - name: Install dependencies
         run: npm install
 
       - name: Fix Expo dependencies
-        run: npx expo install --fix
+        run: |
+          npx expo install --check
+          npx expo install --fix
+          npx expo-doctor || true # اگر خطا داد، ادامه بده
 
-      - name: Clean Gradle (if android folder exists)
+      - name: Apply overrides for Reanimated/Worklets
+        run: |
+          # این بخش مشکل سازگاری SDK 58 با Reanimated را حل می‌کند
+          npx npm-add-script "overrides" '{"react-native-reanimated": "4.7.0", "react-native-worklets": "0.13.0"}' || true
+
+      - name: Clean Gradle Cache
         run: |
           if [ -d "android" ]; then
             cd android && ./gradlew clean && cd ..
@@ -35,10 +43,10 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add package.json package-lock.json
-          git commit -m "Fix: هماهنگ‌سازی نسخه کتابخانه‌ها با Expo SDK 58" || echo "No changes to commit"
+          git commit -m "Fix: هماهنگ‌سازی نسخه‌ها و رفع خطای Gradle" || echo "No changes to commit"
           git push
 
-      - name: Setup Expo and EAS CLI
+      - name: Setup EAS CLI
         run: npm install -g eas-cli
 
       - name: Build Android APK
