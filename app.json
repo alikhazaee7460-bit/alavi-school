@@ -1,4 +1,3 @@
-
 {
   "expo": {
     "name": "دبستان دخترانه علوی اسلامی",
@@ -8,21 +7,18 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFF9F5"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "ir.alavi.school",
-      "infoPlist": {}
+      "bundleIdentifier": "ir.alavi.school"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/android-icon-foreground.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFF9F5"
       },
       "package": "ir.alavi.school"
@@ -33,18 +29,16 @@
     },
     "plugins": [
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "اجازه دسترسی به گالری برای آپلود عکس در گالری مدرسه."
+        }
+      ]
     ],
     "extra": {
-      "supportsRTL": true,
-      "router": {
-        "asyncRoutes": {
-          "web": true
-        }
-      },
-      "eas": {
-        "projectId": "3fdef87a-1cdf-4fa8-bc2f-637e7a431361"
-      }
+      "supportsRTL": true
     },
     "experiments": {
       "typedRoutes": true
