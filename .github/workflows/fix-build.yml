@@ -24,6 +24,12 @@ jobs:
       - name: Fix Expo dependencies
         run: npx expo install --fix
 
+      - name: Clean Gradle (if android folder exists)
+        run: |
+          if [ -d "android" ]; then
+            cd android && ./gradlew clean && cd ..
+          fi
+
       - name: Commit changes
         run: |
           git config --global user.name "GitHub Action"
